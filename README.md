@@ -29,33 +29,33 @@ cd VacationAssistant
 ```
 3. Create and activate a virtual environment:
 
-   For Mac/Linux:
+For Mac/Linux:
 ```
 python3 -m venv venv
 source venv/bin/activate
 ```
-   For Windows:
+For Windows:
 ```
 python -m venv venv
 .\venv\Scripts\activate  
 ```
 4. Install the required Python dependencies:
 
-   For Mac/Linux:
+For Mac/Linux:
 ```
 pip3 install -r requirements.txt 
 ```
-   For Windows:
+For Windows:
 ```
 pip install -r requirements.txt 
 ```
 5. Run the application:
 
-   For Mac/Linux:
+For Mac/Linux:
 ```
 python3 vacation_assistant.py 
 ```
-   For Windows:
+For Windows:
 ```
 python vacation_assistant.py 
 ```
