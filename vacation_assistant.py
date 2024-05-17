@@ -61,7 +61,7 @@ tk.Button(
     text="Check Offers",
     font=("System", 14),
     fg="violet",
-    cursor='hand',
+    cursor='hand2',
     command=on_offers_check
 ).pack(pady=10)
 
@@ -107,8 +107,8 @@ tk.Button(
     text="Check Budget",
     font=("System", 14),
     fg="violet",
-    cursor='hand',
-    command=on_budget_check
+    cursor='hand2',
+    command=on_budget_check,
 ).pack(pady=10)
 
 budget_result_label = tk.Label(root, text="")
