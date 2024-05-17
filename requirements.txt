@@ -1,5 +1,5 @@
-beautifulsoup4
-requests
-playwright-sync
-pyperclip
-Pillow
+beautifulsoup4==4.12.3
+requests==2.31.0
+playwright==1.43.0
+pyperclip==1.8.2
+pillow==10.3.0

@@ -12,7 +12,7 @@ The application uses **Tkinter** for the graphical user interface, **SQLite** fo
 ---
 
 ## Prerequisites
-**Python** and **Chromium** should be installed on your PC
+**Python** should be installed on your PC
 
 ---
 
@@ -32,11 +32,15 @@ cd VacationAssistant
 For Mac/Linux:
 ```
 python3 -m venv venv
+```
+```
 source venv/bin/activate
 ```
 For Windows:
 ```
 python -m venv venv
+```
+```
 .\venv\Scripts\activate  
 ```
 4. Install the required Python dependencies:
