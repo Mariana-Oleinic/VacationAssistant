@@ -5,7 +5,7 @@ import sqlite3
 connection = sqlite3.connect('vacation_hot_offers.db')
 cursor = connection.cursor()
 
-cursor.execute('''DROP TABLE offers''')
+cursor.execute('''DROP TABLE IF EXISTS offers''')
 
 cursor.execute('''CREATE TABLE offers (
                agency_name TEXT,
