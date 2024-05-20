@@ -5,9 +5,10 @@ import tkinter as tk
 from tkinter import font
 from tkinter import ttk
 import sqlite3
+from datetime import datetime
+from io import BytesIO
 from PIL import Image, ImageTk
 import requests
-from io import BytesIO
 from offer_scraper import scrape_offers_and_populate_db
 from convertor_scraper import scrape_currency_conversion
 
@@ -105,7 +106,7 @@ tk.Button(
     fg="red",
     cursor='hand2',
     command=reset_offers
-).pack(pady=5)
+).pack()
 
 offers_result_label = tk.Label(left_frame, text="")
 offers_result_label.pack(padx=20, pady=10)
@@ -162,38 +163,73 @@ tk.Button(
     fg="red",
     cursor='hand2',
     command=reset_budget,
-).pack(pady=5)
+).pack()
 
 budget_result_label = tk.Label(center_frame, text="")
 budget_result_label.pack(padx=20, pady=10)
 
 # Code for "check weather" feature:
-def fetch_weather_forecast(city, api_key, url):
-    response = requests.get(url.format(city, api_key))
-    data = response.json()
-    if data["cod"] != "404":
+def fetch_weather_forecast(city, api_key, current_weather_url, forecast_url):
+    """
+    Fetches the current weather and daily forecasts for a given city.
+    Args:
+    - city (str): The name of the city.
+    - api_key (str): The API key for accessing the weather API.
+    - current_weather_url (str): The URL template for fetching current weather data.
+    - forecast_url (str): The URL template for fetching forecast data.
+    Returns:
+    - Tuple[dict, list]: A tuple containing the current weather data and daily forecasts.
+                         Returns (None, None) if the request fails.
+    """
+    current_weather_response = requests.get(current_weather_url.format(city, api_key))
+    if current_weather_response.status_code == 200:
+        data = current_weather_response.json()
+        lat, lon = data['coord']['lat'], data['coord']['lon']
         weather_data = {
             "city": data["name"],
             "temperature": round(data["main"]["temp"] - 273.15),
             "description": data["weather"][0]["description"],
-            "icon": data["weather"][0]["icon"]
+            "icon": data["weather"][0]["icon"],
+            'day': datetime.fromtimestamp(data['dt']).strftime('%A')
         }
-        return weather_data
+        forecast_response = requests.get(forecast_url.format(lat, lon, api_key))
+        if forecast_response.status_code == 200:
+            data2 = forecast_response.json()
+            daily_forecasts = extract_daily_forecasts(data2)
+            return weather_data, daily_forecasts
     else:
-        return None
-    
+        return None, None
+  
+
+def extract_daily_forecasts(response):
+    """
+    Extracts daily forecasts from the API response.
+    Args:
+    - response (dict): The API response containing forecast data for multiple days and at different hours.
+    Returns:
+    - list: A list of daily forecasts at specified time 12:00:00.
+    """
+    daily_forecasts = {}
+    for forecast in response['list']:
+        date, time = forecast['dt_txt'].split(" ")
+        if date != datetime.now() not in daily_forecasts or time == "12:00:00":
+            daily_forecasts[date] = forecast
+
+    return list(daily_forecasts.values())
+
 def on_weather_check():
     """When clicking on "Check Weather" button, this function updates the weather_result_label"""
     city = city_entry.get()
     api_key = open('API_KEY.txt', 'r').read()
     current_weather_url = 'https://api.openweathermap.org/data/2.5/weather?q={}&appid={}'
-    weather_data = fetch_weather_forecast(city, api_key, current_weather_url)
+    forecast_url = 'https://api.openweathermap.org/data/2.5/forecast?lat={}&lon={}&exclude=current,minutely,hourly,alerts&appid={}'
+    weather_data, daily_forecasts = fetch_weather_forecast(city, api_key, current_weather_url, forecast_url)
     if weather_data:
-        display_weather_forecast(weather_data)
+        display_weather_forecast(weather_data, daily_forecasts)
     else:
         weather_result_label.config(text="City not found", font=bold_font)
 
-def display_weather_forecast(weather_data):
+def display_weather_forecast(weather_data, daily_forecasts):
     """Display weather forecast information"""
     global weather_frame
     # Destroy previous weather_frame if it exists
@@ -201,15 +237,18 @@ def display_weather_forecast(weather_data):
         weather_frame.destroy()
 
     weather_frame = tk.Frame(right_frame)
-    weather_frame.pack(pady=10)
+    weather_frame.pack()
 
-    city_label = tk.Label(weather_frame, text=weather_data['city'], font=("Helvetica", 16))
+    city_label = tk.Label(weather_frame, text=weather_data['city'], font=("Helvetica", 18))
     city_label.pack()
 
-    temperature_label = tk.Label(weather_frame, text=f"{weather_data['temperature']}°C", font=("Helvetica", 48))
+    city_label = tk.Label(weather_frame, text=weather_data['day'], font=("Helvetica", 14))
+    city_label.pack()
+
+    temperature_label = tk.Label(weather_frame, text=f"{weather_data['temperature']}°C", font=("Helvetica", 20))
     temperature_label.pack()
 
-    description_label = tk.Label(weather_frame, text=weather_data['description'], font=("Helvetica", 14))
+    description_label = tk.Label(weather_frame, text=weather_data['description'], font=("Helvetica", 12))
     description_label.pack()
 
     # Fetch the weather icon
@@ -223,11 +262,29 @@ def display_weather_forecast(weather_data):
     icon_label.image = photo
     icon_label.pack()
 
+    for forecast in daily_forecasts:
+        day_label = tk.Label(weather_frame, text=datetime.fromtimestamp(forecast['dt']).strftime('%A'), font=("Helvetica", 14))
+        day_label.pack()
+
+        temp_label = tk.Label(weather_frame, text=f"Min: {round(forecast['main']['temp_min'] - 273.15)}°C, Max: {round(forecast['main']['temp_max'] - 273.15)}°C", font=("Helvetica", 12))
+        temp_label.pack()
+
+        forecast_description_label = tk.Label(weather_frame, text=forecast['weather'][0]['description'], font=("Helvetica", 12))
+        forecast_description_label.pack()
+
+        forecast_icon_url = f"http://openweathermap.org/img/w/{forecast['weather'][0]['icon']}.png"
+        forecast_response = requests.get(forecast_icon_url)
+        forecast_image_data = forecast_response.content
+        forecast_image = Image.open(BytesIO(forecast_image_data))
+        forecast_photo = ImageTk.PhotoImage(forecast_image)
+
+        forecast_icon_label = tk.Label(weather_frame, image=forecast_photo)
+        forecast_icon_label.image = forecast_photo
+        forecast_icon_label.pack()
+
 def reset_weather():
     """Clear the weather result label, clear the city field, and destroy weather frame"""
     city_entry.delete(0, tk.END)
-    global weather_frame
-    weather_result_label.config(text="")
     if 'weather_frame' in globals():
         weather_frame.destroy()
 
@@ -246,7 +303,7 @@ tk.Button(
     fg="violet",
     cursor='hand2',
     command=on_weather_check
-).pack(pady=10)
+).pack(pady=5)
 
 tk.Button(
     right_frame,
@@ -255,7 +312,7 @@ tk.Button(
     fg="red",
     cursor='hand2',
     command=reset_weather,
-).pack(pady=5)
+).pack()
 
 weather_result_label = tk.Label(right_frame, text="")
 weather_result_label.pack(padx=20, pady=10)

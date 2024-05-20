@@ -36,22 +36,25 @@ def scrape_offers_and_populate_db(agency):
 
     if agency in agencies_data:
         url = agencies_data[agency]['url']
-        result = requests.get(url).text
-        soup = BeautifulSoup(result, 'html.parser')
-        selectors = agencies_data[agency]['selectors']
-        
-        titles_data = soup.findAll(class_=selectors['offers'])
-        offers_titles = [div.get_text(strip=True) for div in titles_data]
-        
-        dates_data = soup.findAll(class_=selectors['dates'])
-        offers_dates = [div.get_text(strip=True) for div in dates_data]
-        
-        prices_data = soup.findAll(class_=selectors['prices'])
-        offers_prices = [div.get_text(strip=True) for div in prices_data]
+        response = requests.get(url)
+        if response.status_code == 200:
+            result = response.text
+            soup = BeautifulSoup(result, 'html.parser')
+            selectors = agencies_data[agency]['selectors']
+            
+            titles_data = soup.findAll(class_=selectors['offers'])
+            offers_titles = [div.get_text(strip=True) for div in titles_data]
+            
+            dates_data = soup.findAll(class_=selectors['dates'])
+            offers_dates = [div.get_text(strip=True) for div in dates_data]
+            
+            prices_data = soup.findAll(class_=selectors['prices'])
+            offers_prices = [div.get_text(strip=True) for div in prices_data]
 
-        agency_name = agency
+            agency_name = agency
 
-        for title, date, price in zip(offers_titles, offers_dates, offers_prices): 
-            cursor.execute('''INSERT INTO offers (agency_name, offer_title, offer_date, offer_price) VALUES (?, ?, ?, ?)''', (agency_name, title, date, price))
+            for title, date, price in zip(offers_titles, offers_dates, offers_prices): 
+                cursor.execute('''INSERT INTO offers (agency_name, offer_title, offer_date, offer_price) VALUES (?, ?, ?, ?)''', (agency_name, title, date, price))
 
-    connection.commit()
+        connection.commit()
+

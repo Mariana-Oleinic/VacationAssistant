@@ -6,13 +6,27 @@ The application uses **Tkinter** for the graphical user interface, **SQLite** fo
 ---
 
 ## Features
-- **Check Vacation Hot Offers**: View a list of hot vacation offers from different agencies. It displays the offer title, date, and price for each offer.
-- **Check Budget**: Convert an amount from one currency to another. It supports conversion between MDL, USD, and EUR currencies.
+- **Check Vacation Hot Offers**: View a list of hot vacation offers from different agencies. Displays the offer title, date, and price for each offer.
+- **Check Budget**: Convert an amount from one currency to another. Supports conversion between MDL, USD, and EUR currencies.
+- **Check Weather**: View the current weather and weather forecast for a specified city or country. Displays the temperature in Celsius, a short weather description, and an icon representing the weather.
 
 ---
 
 ## Prerequisites
-**Python** should be installed on your PC
+- **Python** should be installed on your PC.
+- To use the weather forecast functionality in this application, you will need to obtain an **API key** from **OpenWeatherMap**. 
+
+Follow these steps to get your Free API key:
+
+1. Go to [OpenWeatherMap](https://openweathermap.org/).
+2. Navigate to the "Pricing" section.
+3. Scroll to the "Current weather and forecasts collection" table and click on "Get API key" under "Free" column.
+4. You will be promted to create an account. Create an account (if you don't have one).
+5. Once you sign in, go to the "My API keys" section, and copy your key.
+6. This API key will be added into a file named API_KEY.txt. Further instructions will be provided in the next section below.
+
+**Note:** Keep your API key secure and do not share it publicly. Treat it like a password.
+
 
 ---
 
@@ -53,7 +67,14 @@ For Windows:
 ```
 pip install -r requirements.txt 
 ```
-5. Run the application:
+5. Create API_KEY.txt file and add your API key there:
+
+For Mac/Linux/Windows:
+```
+echo "PASTE_YOUR_API_KEY_HERE" >> API_KEY.txt
+```
+
+6. Run the application:
 
 For Mac/Linux:
 ```
@@ -70,5 +91,6 @@ python vacation_assistant.py
 
 1. Select a travel agency from the dropdown menu, and click "Check Offers" to view the hot offers.
 2. Enter the amount, select the currencies, and click "Check Budget" to convert the amount.
+3. Enter a city, and click "Check Weather" to view the current weather and weather forecast for that city.
 
 ---
