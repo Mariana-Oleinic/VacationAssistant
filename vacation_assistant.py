@@ -17,7 +17,7 @@ root.title("Vacation Planner Assistant")
 root.eval("tk::PlaceWindow . center")
 bold_font = font.Font(weight="bold")
 
-IMAGE_PATH = "assets/BannerWebsite-with-logo-4.png"
+IMAGE_PATH = "assets/sigmoid.png"
 image = Image.open(IMAGE_PATH)
 width, height = 400, 200
 resized_image = image.resize((width, height))
@@ -205,7 +205,7 @@ def extract_daily_forecasts(response):
     """
     Extracts daily forecasts from the API response.
     Args:
-    - response (dict): The API response containing forecast data for multiple days and at different hours.
+   - response (dict): The API response containing forecast data for multiple days and at different hours.
     Returns:
     - list: A list of daily forecasts at specified time 12:00:00.
     """
@@ -220,7 +220,7 @@ def extract_daily_forecasts(response):
 def on_weather_check():
     """When clicking on "Check Weather" button, this function updates the weather_result_label"""
     city = city_entry.get()
-    api_key = open('API_KEY.txt', 'r').read()
+    api_key = open('API_KEY.txt', 'r').read().strip()
     current_weather_url = 'https://api.openweathermap.org/data/2.5/weather?q={}&appid={}'
     forecast_url = 'https://api.openweathermap.org/data/2.5/forecast?lat={}&lon={}&exclude=current,minutely,hourly,alerts&appid={}'
     weather_data, daily_forecasts = fetch_weather_forecast(city, api_key, current_weather_url, forecast_url)
@@ -285,6 +285,7 @@ def display_weather_forecast(weather_data, daily_forecasts):
 def reset_weather():
     """Clear the weather result label, clear the city field, and destroy weather frame"""
     city_entry.delete(0, tk.END)
+    weather_result_label.config(text="")
     if 'weather_frame' in globals():
         weather_frame.destroy()
 
