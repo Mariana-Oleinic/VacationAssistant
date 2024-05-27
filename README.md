@@ -1,7 +1,8 @@
 # Vacation Planner Assistant
 
-This is a simple GUI application to assist users in planning their vacations. It provides features to check hot offers from two travel agencies and to convert currency amounts between three currencies.
+This is a simple GUI application to assist users in planning their vacations. It provides features to check hot offers from two travel agencies, to convert currency amounts between three currencies, and to check weather forecast for a specified city or country.
 The application uses **Tkinter** for the graphical user interface, **SQLite** for database management, and web scraping with **Beautiful Soup** and **Playwright** for data retrieval.
+The project also includes testing with **Pytest** to ensure data integrity and code quality.
 
 ---
 
@@ -87,10 +88,33 @@ python vacation_assistant.py
 
 ---
 
-# Usage
+## Usage
 
-1. Select a travel agency from the dropdown menu, and click "Check Offers" to view the hot offers.
-2. Enter the amount, select the currencies, and click "Check Budget" to convert the amount.
-3. Enter a city, and click "Check Weather" to view the current weather and weather forecast for that city.
+1. Check Hot Offers:
 
+- Select a travel agency from the dropdown menu.
+- Click the "Check Offers" button to view the latest hot offers.
+
+2. Check Budget:
+
+- Enter the amount you want to convert.
+- Select the source and target currencies from the dropdown menus.
+- Click the "Check Budget" button to perform the currency conversion.
+- Note: A browser window will automatically open and close after the script completes.
+
+3. Check Weather:
+
+- Enter the name of a city.
+- Click the "Check Weather" button to view the current weather and the weather forecast for that city.
+
+---
+
+## Testing
+
+1. Run the tests: 
+
+For Mac/Linux/Windows:
+```
+pytest tests/
+```
 ---
