@@ -20,6 +20,7 @@ def setup_database():
 
 
 def populate_database(agency, cursor):
+    setup_database()
     agency_name, offers_titles, offers_dates, offers_prices = asyncio.run(scrape_offers(agency))
     for title, date, price in zip(offers_titles, offers_dates, offers_prices):
         cursor.execute('''INSERT INTO offers (agency_name, offer_title, offer_date, offer_price) VALUES (?, ?, ?, ?)''', (agency_name, title, date, price))
