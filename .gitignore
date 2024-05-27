@@ -2,3 +2,4 @@
 __pycache__
 vacation_hot_offers.db
 API_KEY.txt
+.pytest_cache
