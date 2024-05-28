@@ -105,7 +105,6 @@ python vacation_assistant.py
 - Enter the amount you want to convert.
 - Select the source and target currencies from the dropdown menus.
 - Click the "Check Budget" button to perform the currency conversion.
-- Note: A browser window will automatically open and close after the script completes.
 
 3. Check Weather:
 
