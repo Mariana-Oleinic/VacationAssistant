@@ -1,10 +1,10 @@
 from playwright.sync_api import sync_playwright
-import pyperclip
+
 
 def scrape_currency_conversion(amount, from_currency, to_currency):
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto('https://www.curs.md/en') 
 			
@@ -16,10 +16,8 @@ def scrape_currency_conversion(amount, from_currency, to_currency):
 			
             to_currency_selector = f'.btn.tgt-currency:has-text("{to_currency}")'
             page.click(to_currency_selector, force=True)
-			
-            page.click('button.copy-result-btn.btn')
-            copied_value = pyperclip.paste()
-            converted_amount = copied_value
+
+            converted_amount = page.evaluate('document.querySelector(".form-control.tgt-sum").value')
             return f'{converted_amount} {to_currency}'
     except Exception as e:
         print("An error occurred", e)
