@@ -68,14 +68,19 @@ For Windows:
 ```
 pip install -r requirements.txt 
 ```
-5. Create API_KEY.txt file and add your API key there:
+5. Install the necessary browser binaries for Playwright to function:
+
+For Mac/Linux/Windows:
+```
+playwright install
+```
+6. Create API_KEY.txt file and add your API key there:
 
 For Mac/Linux/Windows:
 ```
 echo "PASTE_YOUR_API_KEY_HERE" >> API_KEY.txt
 ```
-
-6. Run the application:
+7. Run the application:
 
 For Mac/Linux:
 ```
